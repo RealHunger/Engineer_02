@@ -1,4 +1,3 @@
-// 建议重命名为：custom_ctrl_uart.c
 #include "custom_ctrl_uart.h"  // 对应修改后的头文件
 #include "../../Bsp/led/bsp_led.h"
 #include "string.h"
