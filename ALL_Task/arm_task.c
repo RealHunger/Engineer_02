@@ -6,10 +6,11 @@
 #include "cmsis_os.h"             // RTOS系统头文件-系统滴答/延时/任务调度
 #include "stdio.h"                // 标准输入输出-调试打印备用
 #include "../../Bsp/uart/bsp_uart.h" // 串口驱动头文件-上位机/外设通信
+#include "../../Bsp/usb_cdc/bsp_usb_cdc.h"
 #include "../../Bsp/led/bsp_led.h"   // LED驱动头文件-状态指示灯控制【保留灯光 不删除】
-#include "../../Components/remote/remote.h" // 遥控器驱动头文件-遥控数据解析
-// 替换为修改后的UART头文件
+#include "../../Components/remote/remote.h"
 #include "../../Application/custom_ctrl_uart.h"
+
 
 #include "../../Algorithm/arm_gravity_comp/robot_arm.h"
 
@@ -21,8 +22,8 @@ void arm_task_func(void const * argument) {
     Uart->Init(Uart, 921600, 8, 'N', 1);
 
     // 移除USB相关初始化（不再使用USB CDC）
-    // struct usb_device *Usb = usb_get_device();
-    // Usb->Init(Usb);
+    struct usb_device *Usb = usb_get_device();
+    Usb->Init(Usb);
 
     // 初始化自定义控制器UART发送状态（重置包序号）
     CustomCtrl_UART_Init();
@@ -72,8 +73,10 @@ void arm_task_func(void const * argument) {
 
         //Uart->Print(Uart, "%f,%f,%f\r\n", pos_test[0], pos_test[1], pos_test[2]);
 
+        Usb->Print(Usb, "%f\r\n", robot_ctrl.rc->custom.custom_ctrl.joint_angles_rad[0]);
+
         LED_BLUE_Toggle();
 
-        osDelay(100);  // 云台任务调度周期 2ms，固定频率保证控制精度
+        osDelay(2);  // 云台任务调度周期 2ms，固定频率保证控制精度
     }
 }

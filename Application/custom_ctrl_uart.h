@@ -1,4 +1,3 @@
-// 建议重命名为：custom_ctrl_uart.h
 #ifndef INFANTRY_01_CUSTOM_CTRL_UART_H
 #define INFANTRY_01_CUSTOM_CTRL_UART_H
 
