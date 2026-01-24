@@ -13,21 +13,22 @@ void motor_task_func(void const * argument) {
     while (robot_ctrl.monitor.sensor_ready == 0) { osDelay(10); }
     osDelay(1000);
 
-    struct motor_device* chassis[4];
-    for(int i=0; i<4; i++) {
-        char name[25]; sprintf(name, "M3508_CHASSIS_%d", i+1);
-        chassis[i] = motor_get_device(name);
-    }
-    for (int i = 0; i < 4; i++) {
-        chassis[i]->init(chassis[i], 0x201 + i, CHASSIS_CAN_HANDLE, 6,  //替换为宏：CHASSIS_CAN_HANDLE
-                         10.0, /* Kp */
-                         0.0, /* Ki */
-                         0.0, /* Kd */
-                         10000.0, /* Max_Out: 最大电流输出 (max 16384) */
-                         2000.0, /* I_Max: 积分限幅 */
-                         0.5 /* Alpha: 微分项低通滤波系数 */
-        );
-    }
+    // struct motor_device *chassis[4];
+    // for (int i = 0; i < 4; i++) {
+    //     char name[25];
+    //     sprintf(name, "M3508_CHASSIS_%d", i + 1);
+    //     chassis[i] = motor_get_device(name);
+    // }
+    // for (int i = 0; i < 4; i++) {
+    //     chassis[i]->init(chassis[i], 0x201 + i, CHASSIS_CAN_HANDLE, 6, //替换为宏：CHASSIS_CAN_HANDLE
+    //                      10.0, /* Kp */
+    //                      0.0, /* Ki */
+    //                      0.0, /* Kd */
+    //                      10000.0, /* Max_Out: 最大电流输出 (max 16384) */
+    //                      2000.0, /* I_Max: 积分限幅 */
+    //                      0.5 /* Alpha: 微分项低通滤波系数 */
+    //     );
+    // }
 
     struct motor_device* joint[7];
     for(int i=0; i<7; i++) {
@@ -87,12 +88,12 @@ void motor_task_func(void const * argument) {
     {
 
         // 1. 每毫秒执行所有电机PID计算，无此步骤电机无控制输出
-        for(uint8_t i=0; i<4; i++) chassis[i]->update(chassis[i]);
+        // for(uint8_t i=0; i<4; i++) chassis[i]->update(chassis[i]);
         for(uint8_t i=0; i<8; i++) dm_motors[i]->update(dm_motors[i]);
 
 
         // 2. 大疆底盘电机指令
-        DJI_Motor_Send_CAN_Group(CHASSIS_CAN_HANDLE);  //替换为宏：CHASSIS_CAN_HANDLE
+        //DJI_Motor_Send_CAN_Group(CHASSIS_CAN_HANDLE);  //替换为宏：CHASSIS_CAN_HANDLE
 
         // 3. 8个达妙轮流发送,每毫秒仅发送1个，8ms轮完一遍，无总线压力
         dm_motors[dm_send_idx]->send_ctrl_cmd(dm_motors[dm_send_idx]);

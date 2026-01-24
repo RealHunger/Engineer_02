@@ -65,11 +65,11 @@ void arm_task_func(void const * argument) {
         for (int i = 0; i < 7; i++) {
             joint[i]->set_target(joint[i], 3, 0.0f, 0.0f, gravity_torque[i]);
         }
-
         gripper->set_target(gripper, 3, 0.0f, 0.0f, 0.0f);
 
-        // 关键修改：调用UART发送函数，替换原USB发送
+
         CustomCtrl_UART_Send_MotorData(Uart, joint_pos, gripper_open);
+
 
         //Uart->Print(Uart, "%f,%f,%f\r\n", pos_test[0], pos_test[1], pos_test[2]);
 
